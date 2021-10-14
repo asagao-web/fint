@@ -16,9 +16,9 @@ def getOptPolicy():
 			r = bbSimulate(span[0],span[1], bbWindow)
 			presults.append(((span, bbWindow), r))
 
-	optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.85]
+	optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.8]
 	opt = optResult[0][0]
-	# print(optResult)
+	print(optResult)
 	print(opt)
 	return opt
 	
@@ -31,7 +31,7 @@ def viewOptPolicy():
 			r = bbSimulate(span[0],span[1], bbWindow)
 			presults.append(((span, bbWindow), r))
 
-	optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.85]
+	optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.8]
 	opt = optResult[0][0]
 	# print(optResult)
 	print(opt)
