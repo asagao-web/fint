@@ -1,0 +1,8 @@
+# sync to vps
+rsync -rcv --rsh="ssh -p 7625" Finance lenux@maya.vnxsys.com:~/OT
+
+# sync to local
+rsync -rcv --rsh="ssh -p 7625" lenux@maya.vnxsys.com:~/OT/Finance .
+
+# for web app, externally visible
+flask run --host=0.0.0.0

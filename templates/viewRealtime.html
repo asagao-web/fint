@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"></script>
+    <title>OT current policy</title>
+</head>
+
+<body>
+    <p>last update: {{ lastupdate }}</p>
+    <p>status: {{ status }}</p>
+    <p><a href=# id=calculate>>> start calculation</a></p>
+    <p id="status">Stand-by...</p>
+    <p>span : <span id="span"></span></p>
+    <p>bbWindow : <span id="weight"></span></p>
+    <div>
+        <p>param : <span id="detail"></span></p>
+    </div>
+    <a href="static/currentview.png" data-lightbox="abc"> <img src="static/currentview.png" alt="data_image">
+    </a>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <form action="/startOT" method="post">
+        <button name="startOT" type="submit">START</button>
+    </form>
+
+    <form action="/stopOT" method="post">
+        <button name="stopOT" type="submit">STOP</button>
+    </form>
+
+
+
+    <!-- https://flask.palletsprojects.com/en/2.0.x/patterns/jquery/ -->
+    <script>
+        $.ajaxSetup({
+            "error": function() {
+                alert("ajax failed")
+            }
+        })
+        $(function() {
+            $("a#calculate").bind('click', function() {
+                // $.getJSON($SCRIPT_ROOT + "/calculate", {
+                $("#status").text("Calculating...")
+                $("#status").css("color", "orange")
+
+                $.getJSON("/calculate", {
+                    // no args, just running calcualte func on server
+                }, function(data) {
+                    $("#span").text(data.s);
+                    $("#weight").text(data.w);
+                    console.log(data)
+                    $("#status").text("Calculation Done! See the data.")
+                    $("#status").css({
+                        "color": "green",
+                        "font-weight": "bold"
+                    })
+                    $("#detail").text(data.d)
+                });
+                return false;
+            })
+        });
+    </script>
+
+</body>
+
+
+</html>
