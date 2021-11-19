@@ -151,7 +151,7 @@ class OandaTrade:
 				}
 		}
 		r = orders.OrderCreate(self.accountID, data=data)
-		print("debug r: ", r)
+		# print("debug r: ", r)
 		res = self.api.request(r)
 		print("debug res: ", res)
 		self.stateDict["inPrice"] = float(res['orderFillTransaction']['price'])

@@ -17,6 +17,17 @@ class Trade:
 		self.arr = arr
 		self.won = 0
 		self.lost = 0
+		self.binHistory = [] # only 1 win 0 lose
+		self.weightedWinRatio = 0
+
+	def calcWeightedWinRatio(self, arr, result):
+		arr.append(result)
+		def weightedAve(arr):
+			w = np.linspace(0.1,1,len(arr))
+			return (w * arr).sum() / len(arr) 
+		self.weightedWinRatio = weightedAve(arr)
+
+
 	def long(self,i,  ):
 		if self.position == 0:
 			self.inPrice = self.arr[i]
@@ -55,8 +66,10 @@ class Trade:
 		# update win ratio
 		if profit > 0:
 			self.won += 1
+			self.calcWeightedWinRatio(self.binHistory, 1)
 		elif profit < 0:
 			self.lost += 1
+			self.calcWeightedWinRatio(self.binHistory, 0)
 		# print("total profit: ", self.profit)
 		
 	def currentProfit(self, currentPrice):
@@ -68,8 +81,10 @@ class Trade:
 		# update win ratio
 		if currentProf > 0:
 			self.won += 1
+			self.calcWeightedWinRatio(self.binHistory, 1)
 		elif currentProf < 0:
 			self.lost += 1
+			self.calcWeightedWinRatio(self.binHistory, 0)
 		return currentProf 
 
 
@@ -118,7 +133,8 @@ def bbSimulate(SPAN, LENGTH, optW): # SPAN is oanda granularity
 	t.profit += t.currentProfit(row["raw"])
 
 	# print("************\n*************END") 
-	return round(t.profit,2), round(t.won / (t.won + t.lost),2)
+	return round(t.profit,2), round(t.won / (t.won + t.lost),2), round(t.weightedWinRatio, 2)
+
 
 
 if __name__ == "__main__":

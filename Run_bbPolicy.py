@@ -6,7 +6,49 @@ from mod_bb import Trade, bbSimulate
 from OANDA_FUNC_CONF import Data
 import matplotlib.pyplot as plt
 from mod_system import SystemManagement
-# get opt policy
+# test opt policy in jupyter 
+def testOptPolicy():
+	spans = [("M30",5000), ("H1",2500), ("H2",1250)]
+	bbWindows = [i for i in range(30,300, 10)]
+	presults = []
+	for span in spans:
+		for bbWindow in bbWindows:
+			r = bbSimulate(span[0],span[1], bbWindow)
+			presults.append(((span, bbWindow), r))
+
+	# sort by amount
+	# optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.7]
+
+	# sort by weighted ave 
+	optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][2], reverse=True) if o[1][1] > 0.6]
+	opt = optResult[0][0]
+	print(optResult)
+	print(opt)
+	return opt
+
+def getOptPolicy2():
+	spans = [("M30",5000), ("H1",2500), ("H2",1250)]
+	bbWindows = [i for i in range(30,300, 10)]
+	presults = []
+	for span in spans:
+		for bbWindow in bbWindows:
+			r = bbSimulate(span[0],span[1], bbWindow)
+			presults.append(((span, bbWindow), r))
+
+	# sort by amount
+	# optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.7]
+
+	# sort by weighted ave 
+	# 1st sorting
+	preResult = [o for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.6]
+	# 2nd sorting
+	optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(preResult, key=lambda x:x[1][2], reverse=True) if o[1][1] > 0.6]
+	opt = optResult[0][0]
+	print(optResult)
+	print(opt)
+	return opt
+
+# get opt policy for production
 def getOptPolicy():
 	spans = [("M30",5000), ("H1",2500), ("H2",1250)]
 	bbWindows = [i for i in range(30,300, 10)]
@@ -16,7 +58,7 @@ def getOptPolicy():
 			r = bbSimulate(span[0],span[1], bbWindow)
 			presults.append(((span, bbWindow), r))
 
-	optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.8]
+	optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.7]
 	opt = optResult[0][0]
 	print(optResult)
 	print(opt)
@@ -126,7 +168,9 @@ def run(o, SPAN, LENGTH, optW): # args: instance, opt[0], LENGTH=5000, opt[1]
 				fig.savefig("{}.png".format(o.instrument))
 				o.line_important("Short order Closed. Profit:".format(profit))
 				# /notify
-
+		o.stateDict["inAbove"] = False
+		o.stateDict["inBelow"] = False
+		o.saveState()
 
 
 if __name__ == "__main__":
@@ -147,16 +191,16 @@ if __name__ == "__main__":
 
 		hour = time_now.hour
 		youbi = time_now.weekday()
-		if youbi == 4 and hour >= 22:
-			print("Not active time")
-			time.sleep(360)
-		elif youbi == 5:
+		# if youbi == 4 and hour >= 22:
+		# 	print("Not active time")
+		# 	time.sleep(360)
+		if youbi == 5 and hour >= 5:
 			print("Not active time")
 			time.sleep(360)
 		elif youbi == 6:
 			print("Not active time")
 			time.sleep(360)
-		elif youbi == 0 and hour <= 5:
+		elif youbi == 0 and hour <= 6:
 			print("Not active time")
 			time.sleep(350)
 # #         elif hour >= 1 and hour <= 5:
@@ -164,7 +208,7 @@ if __name__ == "__main__":
 # #             time.sleep(350)
 		else:
 			try:
-				opt = getOptPolicy()
+				opt = getOptPolicy2()
 				# print(opt)
 				run(o, opt[0], 5000, opt[1]) # args: instance, opt[0], LENGTH=5000, opt[1]
 				print(o.stateDict)
