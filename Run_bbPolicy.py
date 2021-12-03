@@ -27,7 +27,7 @@ def testOptPolicy():
 	return opt
 
 def getOptPolicy2():
-	spans = [("M30",5000), ("H1",2500), ("H2",1250)]
+	spans = [("M30",5000), ("H1",2500), ("H3",833)] # maya from H3 1250
 	bbWindows = [i for i in range(30,300, 10)]
 	presults = []
 	for span in spans:
@@ -47,6 +47,28 @@ def getOptPolicy2():
 	print(optResult)
 	print(opt)
 	return opt
+
+def viewOptPolicy2():
+	spans = [("M30",5000), ("H1",2500), ("H3",833)] # maya from H3 1250
+	bbWindows = [i for i in range(30,300, 10)]
+	presults = []
+	for span in spans:
+		for bbWindow in bbWindows:
+			r = bbSimulate(span[0],span[1], bbWindow)
+			presults.append(((span, bbWindow), r))
+
+	# sort by amount
+	# optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.7]
+
+	# sort by weighted ave 
+	# 1st sorting
+	preResult = [o for o in sorted(presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.6]
+	# 2nd sorting
+	optResult = [((o[0][0][0], o[0][1]),o[1] ) for o in sorted(preResult, key=lambda x:x[1][2], reverse=True) if o[1][1] > 0.6]
+	opt = optResult[0][0]
+	#print(optResult)
+	print(opt)
+	return opt, otpResult
 
 # get opt policy for production
 def getOptPolicy():

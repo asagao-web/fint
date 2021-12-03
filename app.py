@@ -8,7 +8,7 @@ import time
 from mod_bb import Trade, bbSimulate
 from OANDA_FUNC_CONF import Data
 import matplotlib.pyplot as plt
-from Run_bbPolicy import viewOptPolicy
+from Run_bbPolicy import viewOptPolicy2
 from mod_system import SystemManagement
 
 app = Flask(__name__)
@@ -51,7 +51,7 @@ def startOT():
 
 @app.route("/calculate")
 def calculate(): # JSON API
-    (SPAN, bWindow), detailResult = viewOptPolicy()
+    (SPAN, bWindow), detailResult = viewOptPolicy2()
     data = Data(SPAN, 3000)
     data = data.bband(window=bWindow)
     date_time = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
