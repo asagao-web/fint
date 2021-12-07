@@ -4,7 +4,7 @@ from pathlib import Path
 
 class SystemManagement:
 	def __init__(self):
-		self.lastLoopTime = None # datetime object
+		self.lastLoopTime = datetime.now() # datetime object
 		self.stop = False
 		self.filename = "systemdata.pkl"
 		filepath = Path(self.filename)

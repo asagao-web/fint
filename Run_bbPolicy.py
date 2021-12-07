@@ -71,13 +71,25 @@ def viewOptPolicy2():
     # 1st sorting
     preResult = [o for o in sorted(
         presults, key=lambda x:x[1][0], reverse=True) if o[1][1] > 0.6]
+    # preresults is [ ( (span, window) ), ( profit, winratio, weightedratio, trend ) ), (...............) ]
     # 2nd sorting
     optResult = [((o[0][0][0], o[0][1]), o[1]) for o in sorted(
         preResult, key=lambda x:x[1][2], reverse=True) if o[1][1] > 0.6]
-    opt = optResult[0][0]
+    # optResult list of ((span, widnow), (profit, winratio, weightedratio, trend))
+    opt = optResult[0][0] # get best one from top
+
+
     # print(optResult)
     print(opt)
-    return opt, optResult
+    # return opt, optResult
+    # 3 range version
+    return opt, _get3rangeTrend(optResult)
+
+def _get3rangeTrend(optResult):
+    M30 = [o for o in optResult if o[0][0] == "M30"][0]
+    H1 = [o for o in optResult if o[0][0] == "H1"][0]
+    H3 = [o for o in optResult if o[0][0] == "H3"][0]
+    return (M30, H1, H3)
 
 # get opt policy for production
 

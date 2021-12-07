@@ -97,10 +97,12 @@ def bbSimulate(SPAN, LENGTH, optW): # SPAN is oanda granularity
 	inBelow = False
 	# fromAbove = False
 	# fromBelow = False
+	lastTouch = 0
 
 	while i < len(bb):
 		row = bb.iloc[i]
 		if row["raw"] > row["upper"]:
+			lastTouch = "Above"
 			if t.position == 1:
 				t.short(i)
 				# print(row["time"])
@@ -109,6 +111,7 @@ def bbSimulate(SPAN, LENGTH, optW): # SPAN is oanda granularity
 			else:
 				inAbove = True
 		elif row["raw"] < row["lower"]:
+			lastTouch = "Below"
 			if t.position == -1:
 				t.long(i)
 				# print(row["time"])
@@ -133,7 +136,8 @@ def bbSimulate(SPAN, LENGTH, optW): # SPAN is oanda granularity
 	t.profit += t.currentProfit(row["raw"])
 
 	# print("************\n*************END") 
-	return round(t.profit,2), round(t.won / (t.won + t.lost),2), round(t.weightedWinRatio, 2)
+	# return > profit, win ratio, weighted ratio, trend
+	return round(t.profit,2), round(t.won / (t.won + t.lost),2), round(t.weightedWinRatio, 2), lastTouch
 
 
 
