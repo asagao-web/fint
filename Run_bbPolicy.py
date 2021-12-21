@@ -49,9 +49,11 @@ def getOptPolicy2():
     # 2nd sorting
     optResult = [((o[0][0][0], o[0][1]), o[1]) for o in sorted(
         preResult, key=lambda x:x[1][2], reverse=True) if o[1][1] > 0.6]
-    opt = optResult[0][0]
-    print(optResult)
-    print(opt)
+    ### original opt
+    # opt = optResult[0][0]
+    ### new opt from 3 trend
+    opt = getBestFrom3rangeTrend(_get3rangeTrend(optResult))[0]
+    print("NORMAL:  ",opt)
     return opt
 
 
@@ -75,12 +77,12 @@ def viewOptPolicy2():
     # 2nd sorting
     optResult = [((o[0][0][0], o[0][1]), o[1]) for o in sorted(
         preResult, key=lambda x:x[1][2], reverse=True) if o[1][1] > 0.6]
-    # optResult list of ((span, widnow), (profit, winratio, weightedratio, trend))
-    opt = optResult[0][0] # get best one from top
+    # optResult list of ((span, widnow), (profit, winratio, weightedratio, trend)) <<<<<<<<<< use this param
+    ### this is original result opt
+    # opt = optResult[0][0] # get best one from top
 
-
-    # print(optResult)
-    print(opt)
+    ## this is new result opt from 3 trend
+    opt = getBestFrom3rangeTrend(_get3rangeTrend(optResult))[0]
     # return opt, optResult
     # 3 range version
     return opt, _get3rangeTrend(optResult)
@@ -91,6 +93,10 @@ def _get3rangeTrend(optResult):
     H3 = [o for o in optResult if o[0][0] == "H3"][0]
     return (M30, H1, H3)
 
+def getBestFrom3rangeTrend(trends3):
+    print("debug :", trends3[0])
+    best = [trend for trend in sorted(trends3, key=lambda x:x[1][0])][0]
+    return best
 # get opt policy for production
 
 
