@@ -95,7 +95,7 @@ def _get3rangeTrend(optResult):
 
 def getBestFrom3rangeTrend(trends3):
     print("debug :", trends3[0])
-    best = [trend for trend in sorted(trends3, key=lambda x:x[1][0])][0]
+    best = [trend for trend in sorted(trends3, key=lambda x:x[1][0], reverse=True)][0]
     return best
 # get opt policy for production
 
